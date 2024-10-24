@@ -6,13 +6,14 @@ export class Game extends Scene {
     background: Phaser.GameObjects.Image;
     gameText: Phaser.GameObjects.Text;
     platforms!: Phaser.Physics.Arcade.StaticGroup;
-    player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    character: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
 
     constructor() {
         super("Game");
     }
-
+    
     preload() {
         this.load.image("sky", "assets/sky.png");
         this.load.image("ground", "assets/platform.png");
@@ -25,7 +26,7 @@ export class Game extends Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
 
         this.add.image(400, 300, "sky");
-        this.platforms = this.physics.add.staticGroup();
+        this.platforms =  this.physics.add.staticGroup();
 
         this.platforms.create(400, 568, "ground").setScale(2).refreshBody();
 
@@ -34,15 +35,17 @@ export class Game extends Scene {
         this.platforms.create(750, 220, "ground");
 
         this.player = this.physics.add.sprite(100, 450, "dude");
+        this.character = this.physics.add.sprite(100, 450, "characters", "elisa-spritesheet1-0.png");
         this.player.setInteractive();
 
         this.player.setBounce(0.2);
         this.player.setCollideWorldBounds(true);
 
+
         this.physics.add.collider(this.player, this.platforms);
 
-        if (this.anims.exists("turn")) {
-            this.player.anims.play("turn");
+        if (this.anims.exists('turn')) {
+            this.player.anims.play('turn');
         } else {
             console.error("Animation 'turn' not found!");
         }
@@ -51,10 +54,12 @@ export class Game extends Scene {
     }
 
     update() {
+
         if (this.cursors.left.isDown) {
             this.player.setVelocityX(-160);
 
             this.player.anims.play("left", true);
+
         } else if (this.cursors.right.isDown) {
             this.player.setVelocityX(160);
 
